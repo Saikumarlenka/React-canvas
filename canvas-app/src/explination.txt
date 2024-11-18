@@ -345,3 +345,43 @@ const detectShape = (x, y) => {
 ---
 
 This function is central to interactive canvas-based applications, enabling users to interact with specific shapes effectively.
+
+
+
+  const hasCollision = (newShape, existingShapes) => {
+    return existingShapes.some((shape) => {
+      if (shape.type === 'rectangle' && newShape.type === 'rectangle') {
+        return (
+          newShape.startX < shape.startX + shape.width && // Collision on the left side
+          newShape.startX + newShape.width > shape.startX && // Collision on the right side
+          newShape.startY < shape.startY + shape.height && // Collision on the top side
+          newShape.startY + newShape.height > shape.startY // Collision on the bottom side
+        );
+      }
+  
+      if (shape.type === 'circle' && newShape.type === 'circle') {
+        const dx = newShape.startX - shape.startX;
+        const dy = newShape.startY - shape.startY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < newShape.radius + shape.radius; // Check if the circles overlap
+      }
+  
+      if (shape.type === 'rectangle' && newShape.type === 'circle') {
+        const closestX = Math.max(shape.startX, Math.min(newShape.startX, shape.startX + shape.width));
+        const closestY = Math.max(shape.startY, Math.min(newShape.startY, shape.startY + shape.height));
+        const dx = newShape.startX - closestX;
+        const dy = newShape.startY - closestY;
+        return Math.sqrt(dx * dx + dy * dy) < newShape.radius; // Circle touches/overlaps rectangle
+      }
+  
+      if (shape.type === 'circle' && newShape.type === 'rectangle') {
+        const closestX = Math.max(newShape.startX, Math.min(shape.startX, newShape.startX + newShape.width));
+        const closestY = Math.max(newShape.startY, Math.min(shape.startY, newShape.startY + newShape.height));
+        const dx = shape.startX - closestX;
+        const dy = shape.startY - closestY;
+        return Math.sqrt(dx * dx + dy * dy) < shape.radius; // Rectangle touches/overlaps circle
+      }
+  
+      return false;
+    });
+  };
