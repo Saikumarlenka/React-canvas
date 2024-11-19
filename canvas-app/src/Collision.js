@@ -104,6 +104,8 @@ function CanvasDraw() {
       }
 
       if (!hasCollision(newShape, shapes)) {
+        console.log('not collied');
+        
         setCurrentShape(newShape);
         redrawCanvas(newShape);
       }
